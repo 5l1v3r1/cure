@@ -1,5 +1,5 @@
 from cure.types.user import User
-from cure.auth.session import session
+from cure.auth.session import session_manager as session
 from cure.util.database import database
 from passlib.hash import sha256_crypt
 import cure.constants as const
@@ -77,7 +77,7 @@ def mfa_authenticate(user_session, code):
     Used for any session where the user_id isn't null.
     :param user_session: the user's session.
     :param code: the mfa code as a str that they used
-    :return:
+    :return: bool of whether user authenticated successfully
     """
     if user_session.user_id is None:
         raise errors.InvalidAuthError()
@@ -150,3 +150,41 @@ def mfa_activate(user, code):
     }, user.from_dict())
 
     return user
+
+def logout(user_session):
+    """
+    Logout a user by their session id
+    :param user_session: The id of the session to logout
+    :return: bool if user logged out successfully
+    """
+    session_obj = session.get_session(user_session)
+
+    if session_obj is None:
+        return False
+
+    session_obj.terminate()
+    return True
+
+def get_session_from_header(headers):
+    """
+    Retrieves a session from the header value
+    :param headers: a dict of all headers sent with request
+    :return: the session used. if no session is used, returns None
+    """
+
+
+    if "Authorization" not in headers.keys():
+        return None
+    
+    auth_header_split = headers["Authorization"].split(' ')
+
+    if len(auth_header_split) != 2:
+        return None
+
+    auth_type = auth_header_split[0]
+    auth_token = auth_header_split[1]
+
+    if auth_type != 'session':
+        return None
+    
+    return session.get_session(auth_token)

@@ -37,7 +37,8 @@ class DatabaseManager:
             username=self.database.username,
             password=self.database.password
         )
-        self.cure_database = self.client.get_database(self.database)
+        self.cure_database = self.client.get_database(self.database.database_name)
+        print("[Database] [INFO] Connected to database!")
 
     def find(self, collection, parameters):
         """
@@ -60,6 +61,5 @@ class DatabaseManager:
         mongo_collection = self.cure_database.get_collection(collection)
         result = mongo_collection.find_one(parameters)
         return result
-
 
 database = DatabaseManager()

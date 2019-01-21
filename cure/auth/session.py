@@ -28,7 +28,7 @@ class Session:
         Determines if the session has expired
         :return: Whether or not the session expired
         """
-        return time.time() < self.expires
+        return time.time() > self.expires
 
     def terminate(self):
         """
@@ -97,13 +97,14 @@ class SessionManager:
         Generates a session where there is no user logged in.
         :return: Session
         """
-        random_range_start = 10 ^ 16
-        random_range_end = (10 ^ 17) - 1
+        random_range_start = 10 ** 16
+        random_range_end = (10 ** 17) - 1
         session_id = random.randint(random_range_start, random_range_end)
-        for session in self.sessions:
-            if session.session_id == session_id:
-                return self.generate_session()
+        current_session_ids = [all_sessions.session_id for all_sessions in self.sessions]
+        if session_id in current_session_ids:
+            return self.generate_session()
         session = Session(session_id)
+        self.sessions.append(session)
         return session
 
     def get_session(self, session_id):
@@ -130,4 +131,4 @@ class SessionManager:
         return None
 
 
-session = SessionManager()
+session_manager = SessionManager()

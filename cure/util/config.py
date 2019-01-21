@@ -20,7 +20,7 @@ class ConfigurationManager:
         try:
             with open("config.json") as config:
                 try:
-                    parsed_config = json.loads(config)
+                    parsed_config = json.loads(config.read())
                     self.cached_config = parsed_config
                     return self.cached_config
                 except json.JSONDecodeError as ex:

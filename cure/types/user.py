@@ -25,4 +25,3 @@ class User(DatabaseObject):
             "flags": self.flags,
             "global_roles": self.global_roles
         }
-
