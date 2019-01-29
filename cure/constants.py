@@ -17,6 +17,7 @@ class Routes:
     ROUTE_AUTH_LOGOUT = "/auth/logout"
     ROUTE_AUTH_MFA = "/auth/mfa"
     ROUTE_AUTH_GET_SESSION_INFO = "/auth/session"
+    ROUTE_GET_USER_SELF = "/users/me"
 
     def get_route(self, route):
         return API_PREFIX + route

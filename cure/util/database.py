@@ -20,23 +20,29 @@ class Database:
 
 class DatabaseManager:
 
+
     def __init__(self):
-        database = Database()
+        database_config = Database()
         configuration = config.read_config()
         # Loads the configuration
-        database.database_name = configuration.get("database_name", "cure")
-        database.host = configuration.get("database_host", "127.0.0.1")
-        database.port = configuration.get("database_port", 27017)
-        database.username = configuration.get("database_username", "cure")
-        database.password = configuration.get("database_password", "password")
-        self.database = database
+        database_config.database_name = configuration.get("database_name", "cure")
+        database_config.host = configuration.get("database_host", "127.0.0.1")
+        database_config.port = configuration.get("database_port", 27017)
+        database_config.username = configuration.get("database_username", "cure")
+        database_config.password = configuration.get("database_password", "password")
+        self.database = database_config
         print("[Database] [INFO] Connecting to database...")
-        self.client = pymongo.MongoClient(
-            self.database.host,
-            self.database.port,
-            username=self.database.username,
-            password=self.database.password
-        )
+        try:
+            self.client = pymongo.MongoClient(
+                self.database.host,
+                self.database.port,
+                username=self.database.username,
+                password=self.database.password,
+                serverSelectionTimeoutMS=100
+            )
+            self.client.server_info()
+        except pymongo.errors.ServerSelectionTimeoutError:
+            print("[Database] [ERROR] Connection timeout while connecting to database - all further operation is unsupported")
         self.cure_database = self.client.get_database(self.database.database_name)
         print("[Database] [INFO] Connected to database!")
 
@@ -61,5 +67,25 @@ class DatabaseManager:
         mongo_collection = self.cure_database.get_collection(collection)
         result = mongo_collection.find_one(parameters)
         return result
+    
+    def insert_one(self, collection, data):
+        """
+        Insert an object into the database.
+        :param collection: (str) collection name
+        :param data: (dict) data to be inserted into the database
+        :return: (tuple: bool/ObjectId) True on sucess / the inserted object's ID
+        """
+        mongo_collection = self.cure_database.get_collection(collection)
+        result = mongo_collection.insert_one(data)
+        return (result.acknowledged, result.inserted_id)
+    
+    def delete(self, collection, object_filter):
+        """
+        Delete an object from the database
+        :param collection: (str) collection name
+        :param object_filter: (dict) requirements for object to be deleted (supports mongodb operators)
+        """
+        mongo_collection = self.cure_database.get_collection(collection)
+        mongo_collection.delete_many(object_filter)
 
 database = DatabaseManager()

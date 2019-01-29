@@ -1,10 +1,12 @@
 from cure.types.user import User
 from cure.auth.session import session_manager as session
+from cure.auth.token import token_manager as token
 from cure.util.database import database
 from passlib.hash import sha256_crypt
 import cure.constants as const
 import cure.types.exception as errors
 import pyotp
+from bson.objectid import ObjectId
 
 
 def register(username, password):
@@ -43,7 +45,7 @@ def login(username, password):
     :param username: Username to log user in with
     :param password: Password to verify
     :return: The newly created session for the user.
-    :raises: cure.types.exception.UsernameNotFoundError
+    :raises: cure.types.exception.UsernameNotFoundError, cure.types.exception.InvalidPasswordError
     """
     username = username.lower()
     result = database.find_one(const.DATABASE_USERS_NAME, {
@@ -66,6 +68,34 @@ def login(username, password):
         new_session.logged_in = False
     else:
         new_session.logged_in = True
+
+    new_session.user_id = user.mongodb_id
+
+    return new_session
+
+def login_via_token(user_token):
+    """
+    Generates a session via a token
+    :param user_token: The token from the user.
+    :return: The newly created session
+    """
+    
+    # TODO In the future, we need to require users to MFA authenticate when redeeming token.
+    
+    user = token.get_user_for_token(user_token)
+    print(user)
+    if user is None:
+        raise errors.InvalidAuthError
+    
+    user = database.find_one(const.DATABASE_USERS_NAME, {
+        "_id": ObjectId(user) # ObjectId
+    })
+
+    new_session = session.generate_session()
+    user = User.from_dict(user)
+    
+    new_session.mfa_authenticated = True
+    new_session.logged_in = True
 
     new_session.user_id = user.mongodb_id
 
@@ -172,7 +202,6 @@ def get_session_from_header(headers):
     :return: the session used. if no session is used, returns None
     """
 
-
     if "Authorization" not in headers.keys():
         return None
     
@@ -188,3 +217,30 @@ def get_session_from_header(headers):
         return None
     
     return session.get_session(auth_token)
+
+def get_token_for_user(user_id):
+    """
+    Get a token by a user's ID.
+    :param user_id: the ID of the user.
+    :return: A token for the user. If a token doesn't exist, it will create one.
+    """
+
+    if user_id is None:
+        return None
+
+    return token.get_token_for_user(str(user_id))
+
+def delete_token_for_user(user_id):
+    """
+    Deletes a token by a user's ID.
+    :param user_id: the ID of the user
+    """
+
+    return token.delete_tokens_for_user(user_id)
+
+def get_user_for_token(user_token):
+    """
+    Returns the user that owns a token or None if the token is invalid.
+    """
+
+    return token.get_user_for_token(str(user_token))

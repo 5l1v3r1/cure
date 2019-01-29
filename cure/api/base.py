@@ -1,5 +1,5 @@
 from cure.server import app
-from cure.types.exception import UserError, InvalidAuthError
+from cure.types.exception import UserError, InvalidAuthError, InvalidJsonError
 from functools import wraps
 import cure.util.database as database
 from cure.auth.session import session_manager
@@ -36,13 +36,12 @@ def require_authentication(f):
         auth_split = auth_header.split(" ")
         if len(auth_split) != 2:
             raise InvalidAuthError
-        if auth_split[0] == 'token':
-            user = auth_token.token_manager.get_user_for_token(auth_split[1])
-            if user is None:
-                raise InvalidAuthError
-        elif auth_split[0] == 'session':
+        if auth_split[0] == 'session':
             user = session_manager.get_session(auth_split[1])
-            if user is None or user.has_expired():
+            if user is None or \
+                user.has_expired() or \
+                not user.mfa_authenticated or \
+                not user.logged_in:
                 raise InvalidAuthError
         else:
             raise InvalidAuthError
@@ -50,3 +49,14 @@ def require_authentication(f):
         return f(*args, **kwargs)        
         
     return decorator
+
+def require_json(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        content_type = flask.request.headers["Content-Type"]
+        if content_type is None or content_type != "application/json":
+            raise InvalidJsonError
+        return f(*args, **kwargs)
+    
+    return decorator
+
