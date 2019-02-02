@@ -15,19 +15,16 @@ def get_route(route):
 
 @app.route(get_route(constants.ROUTES.ROUTE_AUTH_REGISTER), methods=["POST"])
 @require_json
-def register():
+def register(parsed_data):
     """
     This endpoint (ROUTE_AUTH_REGISTER) is used to register a new user.
     """
-    parsed_data = parse_json(request.get_data())
-
     if parsed_data.get("password") is None or parsed_data.get("username") is None:
         raise errors.DumbUserError()
 
     user = auth.register(parsed_data.get("username", "username"), parsed_data.get("password", "password"))
 
-    user_dict = user.as_dict()
-    user_dict.pop("password_hash")
+    user_dict = user.as_public_dict()
     return jsonify({
         "user": user_dict
     })
@@ -35,7 +32,7 @@ def register():
 
 @app.route(get_route(constants.ROUTES.ROUTE_AUTH_LOGIN), methods=["POST"])
 @require_json
-def login():
+def login(parsed_data):
     """
     This endpoint (ROUTE_AUTH_LOGIN) is used to login with username/password.
 
@@ -43,11 +40,6 @@ def login():
     Otherwise, it will be false, and the user will have to mfa authenticate to
     set it to True.
     """
-    try:
-        parsed_data = parse_json(request.get_data())
-    except ValueError:
-        raise errors.InvalidJsonError
-    
 
     username = parsed_data.get("username")
     password = parsed_data.get("password")
@@ -69,8 +61,6 @@ def login():
     })
 
 @app.route(get_route(constants.ROUTES.ROUTE_AUTH_LOGOUT), methods=["POST"])
-@require_json
-@require_authentication
 def logout():
     user_session = auth.get_session_from_header(flask.request.headers)
     if user_session is None:
@@ -82,14 +72,8 @@ def logout():
     })
 
 @app.route(get_route(constants.ROUTES.ROUTE_AUTH_TOKEN_GET), methods=["GET"])
-@require_json
 @require_authentication
-def get_token():
-    user_session = auth.get_session_from_header(flask.request.headers)
-    if user_session is None:
-        raise errors.InvalidAuthError()
-    
-    user = user_session.user_id
+def get_token(user):
     token = auth.get_token_for_user(user)
 
     return jsonify({
@@ -97,14 +81,8 @@ def get_token():
     })
 
 @app.route(get_route(constants.ROUTES.ROUTE_AUTH_TOKEN_REFRESH), methods=["POST"])
-@require_json
 @require_authentication
-def refresh_token():
-    user_session = auth.get_session_from_header(flask.request.headers)
-    if user_session is None:
-        raise errors.InvalidAuthError()
-    
-    user = user_session.user_id
+def refresh_token(user):
     auth.delete_token_for_user(user)
 
     return jsonify({
@@ -113,13 +91,9 @@ def refresh_token():
 
 @app.route(get_route(constants.ROUTES.ROUTE_AUTH_TOKEN_LOGIN), methods=["POST"])
 @require_json
-def login_via_token():
-    try:
-        jsondata = parse_json(request.get_data())
-    except ValueError:
-        raise errors.InvalidJsonError
-    
-    new_session = auth.login_via_token(jsondata.get("token"))
+def login_via_token(parsed_data):
+
+    new_session = auth.login_via_token(parsed_data.get("token"))
     return jsonify({
         "session": {
             "user_id": str(new_session.user_id),

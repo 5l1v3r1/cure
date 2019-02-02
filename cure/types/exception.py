@@ -123,22 +123,10 @@ class DumbUserError(UserError):
     code = 10
 
 
-class InvalidSymbolsInUsernameError(UserError):
+class InvalidUsernameError(UserError):
     """
-    Raised when a user has invalid symbols in their username.
+    Raised when a user has an invalid username
     """
-    friendly_name = "There are invalid symbols in your username. (Note that spaces are not allowed)"
-    identifier = "invalid_symbols_username_error"
+    friendly_name = "Invalid username. Username length must be between 2 and 32. The only special symbols allowed in a username are dashes, underscores, and periods."
+    identifier = "invalid_username_error"
     code = 11
-
-
-class InvalidUsernameLengthError(UserError):
-    """
-    Raised when a user has an invalid username length.
-    """
-    friendly_name = "This username is too short."
-    identifier = "invalid_username_len_error"
-    code = 12
-
-    def __init__(self, too_short=True):
-        self.friendly_name = "This username is too short." if too_short else "This username is too long."

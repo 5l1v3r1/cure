@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from cure.types.user import User
 from cure.auth.session import session_manager as session
 from cure.auth.token import token_manager as token
@@ -6,7 +7,7 @@ from passlib.hash import sha256_crypt
 import cure.constants as const
 import cure.types.exception as errors
 import pyotp
-from bson.objectid import ObjectId
+import re
 
 
 def register(username, password):
@@ -16,15 +17,9 @@ def register(username, password):
     :param password: Password
     :return: A User object on success. Otherwise, it will raise an exception.
     """
-    username = username.lower()
 
-    if " " in username or "\n" in username or "\r\n" in username:
-        raise errors.InvalidSymbolsInUsernameError()
-
-    if len(username) <= 4:
-        raise errors.InvalidUsernameLengthError(True)
-    elif len(username) > 30:
-        raise errors.InvalidUsernameLengthError(False)
+    if not re.match(const.USERNAME_REGEX, username):
+        raise errors.InvalidUsernameError
 
     user = User()
 

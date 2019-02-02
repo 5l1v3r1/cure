@@ -20,8 +20,16 @@ class User(DatabaseObject):
             "password_hash": self.password_hash,
             "has_mfa": self.has_mfa,
             "mfa_key": self.mfa_key,
-            "joined": self.joined,
+            "joined": int(self.joined),
             "is_bot": self.is_bot,
             "flags": self.flags,
             "global_roles": self.global_roles
         }
+    
+    def as_public_dict(self):
+        public_dict = self.as_dict()
+
+        public_dict.pop("password_hash")
+        public_dict.pop("mfa_key")
+
+        return public_dict

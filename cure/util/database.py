@@ -31,7 +31,6 @@ class DatabaseManager:
         database_config.username = configuration.get("database_username", "cure")
         database_config.password = configuration.get("database_password", "password")
         self.database = database_config
-        print("[Database] [INFO] Connecting to database...")
         try:
             self.client = pymongo.MongoClient(
                 self.database.host,
@@ -44,7 +43,6 @@ class DatabaseManager:
         except pymongo.errors.ServerSelectionTimeoutError:
             print("[Database] [ERROR] Connection timeout while connecting to database - all further operation is unsupported")
         self.cure_database = self.client.get_database(self.database.database_name)
-        print("[Database] [INFO] Connected to database!")
 
     def find(self, collection, parameters):
         """
