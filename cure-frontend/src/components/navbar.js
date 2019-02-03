@@ -1,9 +1,7 @@
 import AppBar from '@material-ui/core/AppBar';
 import React, { Component } from 'react';
-import { Toolbar, IconButton, Typography, Button } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Toolbar, IconButton, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import PropTypes from 'prop-types';
 
 
 class NavbarComponent extends Component {
