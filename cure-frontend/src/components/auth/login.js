@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { TextField, Button, Snackbar, IconButton } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
-import { endpoints, post } from './../util/api';
+import ApiUtility from '../../util/api';
 import CloseIcon from '@material-ui/icons/Close';
 
 // TODO rename this to LoginComponent
-class MainComponent extends Component {
+class LoginComponent extends Component {
 
     state = {
         open: false
@@ -95,7 +95,7 @@ class MainComponent extends Component {
         if (username === "" || password === "") {
             // TODO update snackbar text
         }
-        post(endpoints.AUTH_LOGIN, {
+        ApiUtility.post(ApiUtility.endpoints.AUTH_LOGIN, {
             username: username,
             password: password
         }, {}, (data)=> {
@@ -114,4 +114,4 @@ class MainComponent extends Component {
     }
 }
 
-export default MainComponent;
+export default LoginComponent;
