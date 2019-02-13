@@ -188,6 +188,8 @@ def logout(user_session):
         return False
 
     session_obj.terminate()
+
+    session.purge_sessions()
     return True
 
 def get_session_from_header(headers):

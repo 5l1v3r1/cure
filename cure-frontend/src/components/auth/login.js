@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { TextField, Button, Snackbar, IconButton } from '@material-ui/core';
+import { TextField, Button, Snackbar, IconButton, Checkbox, FormControlLabel } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
-import ApiUtility from '../../util/api';
+import api from '../../util/api';
+import auth from '../../util/auth';
+import localization, { locale, getCurrentLocale, formatText } from '../../util/localization'
 import CloseIcon from '@material-ui/icons/Close';
 
 // TODO rename this to LoginComponent
@@ -15,7 +17,11 @@ class LoginComponent extends Component {
         super(props);
         this.state = {
             open: false,
-            redirectToRegister: false
+            redirectToRegister: false,
+            boardName: "Unknown",
+            boardPrivate: true,
+            snackbarText: "",
+            redirectToDashboard: false
         };
         this.login = this.login.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -29,38 +35,66 @@ class LoginComponent extends Component {
         })
     }
 
+    componentDidMount() {
+        // fetch board name
+        api.get(api.endpoints.BOARD_GET, {}, (data) => {
+            if (data.error) {
+                console.error("Failed to fetch data from backend.")
+                return;
+            }
+            this.setState({
+                boardName: data["name"],
+                boardPrivate: data["private"]
+            })
+        })
+    }
+
     render() {
         if (this.state.redirectToRegister) {
             return (
                 <Redirect to="/register"></Redirect>
             );
         }
+        if (this.state.redirectToDashboard) {
+            return (
+                <Redirect to="/dashboard"></Redirect>
+            );
+        }
         return (
             <div style={{margin: "20px"}}>
                 <center>
-                    <p style={{fontSize: "2.5em"}}>insert board name</p>
-                    <p>Welcome to board name!</p>
+                    <h1>{this.state.boardName}</h1>
+                    <p>{localization.getLocaleString(
+                        this.state.private ? "BOARD_WELCOME_SIGN_IN" : "BOARD_WELCOME_SIGN_IN_OR_REGISTER", {
+                            boardName: this.state.boardName
+                        })}</p>
                     <TextField 
                         id="login-field-username"
-                        label="Username"
-                        magin="normal"
+                        label={localization.getLocaleString("COMMON_USERNAME")}
+                        margin="normal"
                     />
                     <br />
                     <TextField 
                         id="login-field-password"
-                        label="Password"
-                        magin="normal"
+                        label={localization.getLocaleString("COMMON_PASSWORD")}
+                        margin="normal"
                         type="password"
                         autoComplete="cure-password"
                     />
                     <br />
+                    <FormControlLabel
+                        control={<Checkbox
+                            id="login-field-remember-me"
+                            label={localization.getLocaleString("REMEMBER_ME")}
+                            margin="normal" />}
+                        label={localization.getLocaleString("REMEMBER_ME")} />
                     <br />
                     <Button variant="contained" onClick={this.login} color="primary">
-                        Login
+                        {localization.getLocaleString("LOGIN_BUTTON")}
                     </Button>
                     <span>&nbsp;</span>
                     <Button variant="contained" onClick={this.register} color="secondary">
-                        Register
+                        {localization.getLocaleString("REGISTER_BUTTON")}
                     </Button>
                 </center>
                 <Snackbar
@@ -74,7 +108,7 @@ class LoginComponent extends Component {
                     ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
-                    message={<span id="message-id">Failed to login: Invalid Password</span>}
+                    message={this.state.snackbarText}
                     action={[
                         <IconButton
                             key="close"
@@ -92,19 +126,33 @@ class LoginComponent extends Component {
     login() {
         var username = document.getElementById("login-field-username").value;
         var password = document.getElementById("login-field-password").value;
-        if (username === "" || password === "") {
-            // TODO update snackbar text
+        var rememberMe = document.getElementById("login-field-remember-me").checked;
+        if (username === "") {
+            this.setState({
+                open: true,
+                snackbarText: localization.getLocaleString("LOGIN_FAIL_USERNAME_REQUIRED")
+            });
+            return;
+        } else if (password === "") {
+            this.setState({
+                open: true,
+                snackbarText: localization.getLocaleString("LOGIN_FAIL_PASSWORD_REQUIRED")
+            });
+            return;
         }
-        ApiUtility.post(ApiUtility.endpoints.AUTH_LOGIN, {
-            username: username,
-            password: password
-        }, {}, (data)=> {
-            if (data.error) {
+        auth.login(username, password, rememberMe, (data) => {
+            if (!data.success) {
                 this.setState({
-                    open: true
+                    open: true,
+                    snackbarText: localization.getLocaleString("LOGIN_FAIL_INVALID_PASSWORD")
+                })
+            } else {
+                this.setState({
+                    open: false,
+                    redirectToDashboard: true
                 });
             }
-        })
+        });
     }
 
     register() {

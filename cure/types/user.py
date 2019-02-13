@@ -11,6 +11,7 @@ class User(DatabaseObject):
     mfa_key = ""
     joined = time.time()
     is_bot = False
+    is_global_admin = False
     flags = 0
     global_roles = []
 
@@ -23,7 +24,8 @@ class User(DatabaseObject):
             "joined": int(self.joined),
             "is_bot": self.is_bot,
             "flags": self.flags,
-            "global_roles": self.global_roles
+            "global_roles": self.global_roles,
+            "is_global_admin": self.is_global_admin
         }
     
     def as_public_dict(self):
@@ -33,3 +35,18 @@ class User(DatabaseObject):
         public_dict.pop("mfa_key")
 
         return public_dict
+
+
+class UserRole(DatabaseObject):
+
+    mongodb_id = None
+    role_name = "unnamed role"
+    role_permissions = 0x00000000
+    role_position = 0
+
+    def as_dict(self):
+        return {
+            "role_name": self.role_name,
+            "role_permissions": self.role_permissions,
+            "role_position": self.role_position
+        }

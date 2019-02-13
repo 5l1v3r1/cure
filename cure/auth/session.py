@@ -84,7 +84,7 @@ class SessionManager:
             if session.has_expired():
                 self.sessions.remove(session)
                 continue
-            if session.time_created > time.ctime(constants.AUTH_UNUSED_SESSION_REMOVAL_TIME) \
+            if session.time_created > time.time() + constants.AUTH_SESSION_EXPIRE_TIME \
                     and not session.logged_in:
                 self.sessions.remove(session)
                 continue
@@ -97,8 +97,8 @@ class SessionManager:
         Generates a session where there is no user logged in.
         :return: Session
         """
-        random_range_start = 10 ** 16
-        random_range_end = (10 ** 17) - 1
+        random_range_start = 10 ** 15
+        random_range_end = (10 ** 16) - 1
         session_id = random.randint(random_range_start, random_range_end)
         current_session_ids = [all_sessions.session_id for all_sessions in self.sessions]
         if session_id in current_session_ids:

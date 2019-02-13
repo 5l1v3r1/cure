@@ -6,25 +6,35 @@ class AuthenticationUtility {
         this.currentSession = null;
         this.currentSessionType = null;
         this.authenticated = false;
-        restoreUsingToken();
+        this.restore();
     }
 
-    restoreUsingToken() {
+    restore() {
         if (window.localStorage.getItem("token") === null) {
+            if (window.localStorage.getItem("session") !== null) {
+                this.currentSessionType = "session";
+                this.currentSession = window.localStorage.getItem("session");
+            }
             return;
         }
         this.currentSessionType = "token";
         this.currentSession = window.localStorage.getItem("token")
+        this.checkCurrentSession((authenticated)=>{
+            this.authenticated = authenticated;
+        });
     }
 
     restoreWithSession(sessionId) {
         this.currentSessionType = "session";
         this.currentSession = sessionId;
+        this.storeInLocalStorage();
     }
 
     storeInLocalStorage() {
         if (this.currentSessionType === "token") {
             window.localStorage.setItem("token", this.currentSession);
+        } else if (this.currentSessionType === "session") {
+            window.localStorage.setItem("session", this.currentSession);
         }
     }
 
@@ -34,8 +44,9 @@ class AuthenticationUtility {
             return;
         }
         api.get(api.endpoints.USERS_ME, {
-            "Authorization": this.getAuthorizationHeaderString
+            "Authorization": this.getAuthorizationHeaderString()
         }, (data) => {
+            console.log(JSON.stringify(data));
             this.authenticated = !data.error;
             callback(!data.error);
         })
@@ -71,14 +82,27 @@ class AuthenticationUtility {
             "password": password
         }, {}, (data) => {
             if (!data.error) {
-                this.restoreWithSession(data["session_id"]);
+                this.restoreWithSession(data.session["session_id"]);
                 callback({
                     success: true,
                     mfaRequired: !data["mfa_authenticated"]
-                })
+                });
                 return;
+            } else {
+                callback({
+                    success: false
+                })
             }
         })
+    }
+
+    logout() {
+        this.postWithAuthentication(api.endpoints.AUTH_LOGOUT, {}, {}, ()=>{});
+        this.currentSession = "";
+        this.currentSessionType = "";
+        this.authenticated = false;
+        window.localStorage.removeItem("token");
+        window.localStorage.removeItem("session");
     }
 
 }

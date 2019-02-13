@@ -6,11 +6,16 @@ import NavbarComponent from './components/navbar';
 import './App.css';
 import { blue, lightBlue } from '@material-ui/core/colors';
 import LoginComponent from './components/auth/login';
+import DashboardComponent from './components/dashboard/dashboard';
+import LogoutComponent from './components/auth/logout';
 
 const theme = createMuiTheme({
   palette: {
     primary: blue,
     secondary: lightBlue
+  },
+  typography: {
+    useNextVariants: true
   }
 })
 
@@ -19,11 +24,15 @@ class App extends Component {
     return (
       <div className="App">
         <MuiThemeProvider theme={theme}>
-          <NavbarComponent />
           <BrowserRouter>
             <div>
-              <Route path="/login" exact component={LoginComponent} />
-              <Route path="/debug" component={DebugComponent} />
+              <NavbarComponent />
+              <div>
+                <Route path="/login" component={LoginComponent} />
+                <Route path="/debug" component={DebugComponent} />
+                <Route path="/dashboard" exact component={DashboardComponent} />
+                <Route path="/logout" component={LogoutComponent} />
+              </div>
             </div>
           </BrowserRouter>
         </MuiThemeProvider>

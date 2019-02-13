@@ -7,6 +7,7 @@ class ApiUtility {
             AUTH_TOKEN_GET: "/auth/token",
             AUTH_TOKEN_GET_SESSION: "/auth/token/generate-session",
             AUTH_TOKEN_LOGOUT: "/auth/token/refresh",
+            BOARD_GET: "/board",
             USERS_ME: "/users/me"
         };
         this.apiLocation = window.location.origin + "/api";
@@ -19,7 +20,17 @@ class ApiUtility {
             headers: headers
         })
             .then(response => response.json())
-            .then(callback);
+            .then(callback)
+            .catch((e)=>{
+                console.error("api error: " + JSON.stringify(e))
+                callback({
+                    error: {
+                        code: -1,
+                        identifier: "invalid_reponse_error",
+                        friendly_name: "An invalid JSON response occurred"
+                    }
+                })
+            });
     }
 
     post(endpoint, data, headers, callback) {
@@ -32,6 +43,16 @@ class ApiUtility {
         })
             .then(response => response.json())
             .then(callback)
+            .catch((e)=>{
+                console.error("api error: " + JSON.stringify(e))
+                callback({
+                    error: {
+                        code: -1,
+                        identifier: "invalid_reponse_error",
+                        friendly_name: "An invalid JSON response occurred"
+                    }
+                })
+            });
     }
 
     patch(endpoint, data, headers, callback) {
@@ -44,6 +65,16 @@ class ApiUtility {
         })
             .then(response => response.json())
             .then(callback)
+            .catch((e)=>{
+                console.error("api error: " + JSON.stringify(e))
+                callback({
+                    error: {
+                        code: -1,
+                        identifier: "invalid_reponse_error",
+                        friendly_name: "An invalid JSON response occurred"
+                    }
+                })
+            });
     }
 
     delete(endpoint, headers, callback) {
@@ -54,6 +85,16 @@ class ApiUtility {
         })
             .then(response => response.json())
             .then(callback)
+            .catch((e)=>{
+                console.error("api error: " + JSON.stringify(e))
+                callback({
+                    error: {
+                        code: -1,
+                        identifier: "invalid_reponse_error",
+                        friendly_name: "An invalid JSON response occurred"
+                    }
+                })
+            });
     }
 }
 

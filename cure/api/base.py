@@ -4,6 +4,7 @@ from functools import wraps
 from flask.app import HTTPException
 import cure.util.database as database
 from cure.auth.session import session_manager
+import cure.constants as constants
 import cure.auth.token as auth_token
 
 import flask
@@ -27,6 +28,9 @@ def handle_user_error(user_error):
     response.headers["Content-Type"] = "application/json"
     return response
 
+def get_route(route_constant):
+    return constants.ROUTES.get_route(route_constant)
+
 def require_authentication(f):
     @wraps(f)
     def decorator(*args, **kwargs):
@@ -36,7 +40,7 @@ def require_authentication(f):
         auth_header = flask.request.headers["Authorization"]
         auth_split = auth_header.split(" ")
         user = None
-        if len(auth_split) != 2:
+        if len(auth_split) < 2:
             raise InvalidAuthError
         if auth_split[0] == 'session':
             user = session_manager.get_session(auth_split[1])
@@ -67,4 +71,13 @@ def require_json(f):
         return f(data, *args, **kwargs)
     
     return decorator
+
+@require_authentication
+def require_global_permissions(f, permission):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        # TODO check permissions
+        return f(*args, **kwargs)
+    return decorator
+        
 

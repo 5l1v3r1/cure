@@ -130,3 +130,11 @@ class InvalidUsernameError(UserError):
     friendly_name = "Invalid username. Username length must be between 2 and 32. The only special symbols allowed in a username are dashes, underscores, and periods."
     identifier = "invalid_username_error"
     code = 11
+
+class InvalidPermissionError(UserError):
+    """
+    Raised when a user doesn't have permission to do something.
+    """
+    friendly_name = "You don't have permission to do that."
+    identifier = "invalid_permission_error"
+    code = 12
