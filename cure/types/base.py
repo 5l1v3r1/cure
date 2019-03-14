@@ -1,3 +1,4 @@
+import bson
 
 class DatabaseObject:
     """
@@ -17,3 +18,14 @@ class DatabaseObject:
                 continue
             setattr(database_object, k, v)
         return database_object
+
+    @classmethod
+    def as_database_object(cls, instance):
+        values = {}
+        for k, v in vars(instance).items():
+            if k.startswith("_"):
+                continue
+            if k == "mongodb_id":
+                k = "_id"
+            values[k] = v
+        return values

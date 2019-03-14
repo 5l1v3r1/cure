@@ -2,7 +2,7 @@ from cure.server import app
 from cure.types.exception import UserError, InvalidAuthError, InvalidJsonError
 from functools import wraps
 from flask.app import HTTPException
-import cure.util.database as database
+from cure.util.database import database
 from cure.auth.session import session_manager
 import cure.constants as constants
 import cure.auth.token as auth_token
@@ -67,7 +67,10 @@ def require_json(f):
         content_type = flask.request.headers["Content-Type"]
         if content_type is None or content_type != "application/json":
             raise InvalidJsonError
-        data = json.loads(flask.request.get_data())
+        try:
+            data = json.loads(flask.request.get_data())
+        except json.JSONDecodeError:
+            raise InvalidJsonError
         return f(data, *args, **kwargs)
     
     return decorator

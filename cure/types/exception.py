@@ -138,3 +138,11 @@ class InvalidPermissionError(UserError):
     friendly_name = "You don't have permission to do that."
     identifier = "invalid_permission_error"
     code = 12
+
+class NotFoundError(UserError):
+    """
+    Raised when an object cannot be found.
+    """
+    friendly_name = "We couldn't find that."
+    identifier = "not_found_error"
+    code = 13

@@ -1,8 +1,8 @@
 from bson.objectid import ObjectId
 from cure.types.user import User
+from cure.util.database import database
 from cure.auth.session import session_manager as session
 from cure.auth.token import token_manager as token
-from cure.util.database import database
 from passlib.hash import sha256_crypt
 import cure.constants as const
 import cure.types.exception as errors
@@ -83,7 +83,7 @@ def login_via_token(user_token):
         raise errors.InvalidAuthError
     
     user = database.find_one(const.DATABASE_USERS_NAME, {
-        "_id": ObjectId(user) # ObjectId
+        "_id": ObjectId(user)
     })
 
     new_session = session.generate_session()

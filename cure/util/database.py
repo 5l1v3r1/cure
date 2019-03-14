@@ -22,6 +22,7 @@ class DatabaseManager:
 
 
     def __init__(self):
+        print("database initalized.")
         database_config = Database()
         configuration = config.read_config()
         # Loads the configuration

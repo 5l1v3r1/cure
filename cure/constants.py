@@ -36,3 +36,5 @@ DATABASE_USERS_NAME = "user"
 USERNAME_REGEX = r"^([a-zA-Z\-\_\.]{2,32})$"
 
 DATABASE_ROLES_NAME = "role"
+DATABASE_TRACKER_NAME = "tracker"
+DATABASE_TRACKER_ROLE_NAME = "tracker-role"

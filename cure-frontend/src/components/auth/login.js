@@ -85,7 +85,6 @@ class LoginComponent extends Component {
                     <FormControlLabel
                         control={<Checkbox
                             id="login-field-remember-me"
-                            label={localization.getLocaleString("REMEMBER_ME")}
                             margin="normal" />}
                         label={localization.getLocaleString("REMEMBER_ME")} />
                     <br />
