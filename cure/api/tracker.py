@@ -37,3 +37,20 @@ def get_tracker(tracker_id):
         raise errors.NotFoundError
     
     return jsonify(tracker.as_dict())
+
+@app.route(get_route(constants.ROUTES.ROUTE_JOIN_TRACKER), methods=["POST"])
+@require_authentication
+def join_tracker(user, tracker_id):
+
+    tracker = tracker_helper.get_tracker(tracker_id)
+
+    if tracker is None:
+        raise errors.NotFoundError
+
+    if tracker.invite_only:
+        raise errors.InvalidPermissionError
+    
+    # TODO when we implement bans, prevent users from joining.
+    
+    tracker_helper.add_user_to_tracker(tracker_id, user)
+    return "", "204"

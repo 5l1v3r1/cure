@@ -5,6 +5,7 @@ class Routes:
 
     ROUTE_GET_TRACKERS = "/trackers"
     ROUTE_ADD_TRACKER = "/trackers/add"
+    ROUTE_JOIN_TRACKER = "/trackers/<tracker_id>/join"
     ROUTE_GET_TRACKER = "/trackers/<tracker_id>"
     ROUTE_DELETE_TRACKER = "/trackers/<tracker_id>/delete"
     ROUTE_GET_REPORT = "/trackers/<tracker_id>/report/<report_id>"
@@ -38,3 +39,4 @@ USERNAME_REGEX = r"^([a-zA-Z\-\_\.]{2,32})$"
 DATABASE_ROLES_NAME = "role"
 DATABASE_TRACKER_NAME = "tracker"
 DATABASE_TRACKER_ROLE_NAME = "tracker-role"
+DATABASE_TRACKER_MEMBER_NAME = "tracker-member"

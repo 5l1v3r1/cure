@@ -1,5 +1,6 @@
 from cure.server import app
-from cure.types.exception import UserError, InvalidAuthError, InvalidJsonError
+from cure.types.exception import UserError, InvalidAuthError, InvalidJsonError, InvalidPermissionError
+from cure.types.user import User
 from functools import wraps
 from flask.app import HTTPException
 from cure.util.database import database
@@ -79,8 +80,11 @@ def require_json(f):
 def require_global_permissions(f, permission):
     @wraps(f)
     def decorator(*args, **kwargs):
-        # TODO check permissions
+        if len(args) == 0:
+            raise UserError
+        if type(args[0]) != User:
+            raise UserError
+        if not args[0].is_global_admin:
+            raise InvalidPermissionError
         return f(*args, **kwargs)
     return decorator
-        
-

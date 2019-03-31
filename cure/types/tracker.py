@@ -24,9 +24,7 @@ class TrackerRole(DatabaseObject):
         }
 
 
-class TrackerMember:
-
-    # TODO eventually, we might make this a database object
+class TrackerMember(DatabaseObject):
 
     permissions = 0x0
     user_id = None
@@ -82,12 +80,14 @@ class Tracker(DatabaseObject):
 
 class TrackerCache:
     """
-    Caches trackers. Allows them to be more efficiently used, especially
-    for trackers with large members.
+    Caches trackers. Allows them to be more efficiently used.
+
+    It is possible that this will be deprecated.
     """
 
     def __init__(self):
         self.trackers = []
+        self.initalized_cache = False
     
     def add_tracker(self, tracker):
         """
@@ -108,3 +108,11 @@ class TrackerCache:
             if tracker.mongodb_id == tracker_id:
                 return tracker
         return None
+    
+    def initalize_cache(self, trackers):
+        """
+        Initalizes the cache for all trackers.
+        """
+        for tracker in trackers:
+            self.trackers.append(tracker)
+        self.initalized_cache = False
