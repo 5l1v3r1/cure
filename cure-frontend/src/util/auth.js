@@ -41,14 +41,14 @@ class AuthenticationUtility {
     checkCurrentSession(callback) {
         if (!this.currentSession || !this.currentSessionType) {
             this.authenticated = false;
-            return;
+            callback(this.authenticated);
         }
         api.get(api.endpoints.USERS_ME, {
             "Authorization": this.getAuthorizationHeaderString()
         }, (data) => {
             console.log(JSON.stringify(data));
             this.authenticated = !data.error;
-            callback(!data.error);
+            callback(this.authenticated);
         })
     }
 

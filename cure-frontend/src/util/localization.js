@@ -18,7 +18,12 @@ class LocalizationUtility {
                 LOGOUT_LOGGING_OUT: "Logging out...",
                 LOGOUT_PLEASE_WAIT: "Please wait.",
                 LOGOUT_SUCCESS: "Logged out successfully",
-                LOGOUT_CLOSE_TIP: "You may now close this window or tab."
+                LOGOUT_CLOSE_TIP: "You may now close this window or tab.",
+                REGISTER_DESCRIPTION: "You may register an account with {boardName}.",
+                REGISTER_LEGAL_MUMBO_JUMBO_HEADER: "Legal Mumbo Jumbo",
+                // TODO allow legal documentation
+                REGISTER_LEGAL_MUMBO_JUMBO_DESCRIPTION: "By registering, you agree to follow the terms and conditions set by {boardName}. Please see legal documents on the main website for {boardName} before you agree.",
+                REGISTER_FAILED: "An error occurred while registering: {error}"
             },
             "en-US": { /* don't override anything here. */ },
             "es-ES": {
@@ -32,7 +37,7 @@ class LocalizationUtility {
     _applyParametersToText(text, parameters) {
         for (var key in parameters) {
             var value = parameters[key];
-            text = text.replace(`{${key}}`, value);
+            text = text.replace(new RegExp(`{${key}}`, "g"), value);
         }
         return text;
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { Route, BrowserRouter} from 'react-router-dom';
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import DebugComponent from './components/debug';
 import NavbarComponent from './components/navbar';
 import './App.css';
@@ -8,6 +8,7 @@ import { blue, lightBlue } from '@material-ui/core/colors';
 import LoginComponent from './components/auth/login';
 import DashboardComponent from './components/dashboard/dashboard';
 import LogoutComponent from './components/auth/logout';
+import RegisterComponent from './components/auth/register';
 
 const theme = createMuiTheme({
   palette: {
@@ -24,15 +25,17 @@ class App extends Component {
     return (
       <div className="App">
         <MuiThemeProvider theme={theme}>
+          
           <BrowserRouter>
             <div>
               <NavbarComponent />
-              <div>
+              <Switch>
                 <Route path="/login" component={LoginComponent} />
                 <Route path="/debug" component={DebugComponent} />
                 <Route path="/dashboard" exact component={DashboardComponent} />
                 <Route path="/logout" component={LogoutComponent} />
-              </div>
+                <Route path="/register" component={RegisterComponent} />
+              </Switch>
             </div>
           </BrowserRouter>
         </MuiThemeProvider>

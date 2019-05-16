@@ -118,7 +118,7 @@ class DumbUserError(UserError):
     Raised when the user is clearly attempting to irritate me with something stupid. (e.g. not providing a password
     field when setting up an account)
     """
-    friendly_name = "You did something wrong. Please fix it."
+    friendly_name = "You did something wrong."
     identifier = "dumb_user_error"
     code = 10
 

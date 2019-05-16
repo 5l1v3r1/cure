@@ -37,13 +37,6 @@ class LogoutComponent extends Component {
     }
 
     componentDidMount() {
-        if (!auth.authenticated) {
-            this.setState({
-                redirectToLogin: true
-            })
-            return;
-
-        }
         auth.checkCurrentSession((authenticated) => {
             if (!authenticated) {
                 this.setState({

@@ -5,6 +5,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import LogoutIcon from '@material-ui/icons/Lock'
 import { Redirect } from 'react-router-dom';
 import localization from '../util/localization';
+import { withRouter } from 'react-router-dom';
 
 
 class NavdrawerComponent extends Component {
@@ -12,28 +13,22 @@ class NavdrawerComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false,
-            shouldRedirect: false,
-            redirectTo: "/"
+            open: false
         }
         this.isActiveDirectory = this.isActiveDirectory.bind(this);
         this.closeDrawer = this.closeDrawer.bind(this);
         this.open = this.open.bind(this);
-        this.redirect = this.redirect.bind(this);
+        this.redirect = this.redirectToPath.bind(this);
+        
     }
 
     render() {
-        if (this.state.shouldRedirect) {
-            return (
-                <Redirect to={this.state.redirectTo}></Redirect>
-            )
-        }
         
         return (
             <div>
                 <Drawer open={this.state.open} onClose={this.closeDrawer}>
                     <List>
-                        <ListItem button onClick={() => this.redirect("/dashboard")}>
+                        <ListItem button onClick={() => this.redirectToPath("/dashboard")}>
                             <ListItemIcon>
                                 <DashboardIcon />
                             </ListItemIcon>
@@ -41,7 +36,7 @@ class NavdrawerComponent extends Component {
                                 {localization.getLocaleString("NAVBAR_DASHBOARD")}
                             </ListItemText>
                         </ListItem>
-                        <ListItem button onClick={() => this.redirect("/logout")}>
+                        <ListItem button onClick={() => this.redirectToPath("/logout")}>
                             <ListItemIcon>
                                 <LogoutIcon />
                             </ListItemIcon>
@@ -71,14 +66,9 @@ class NavdrawerComponent extends Component {
         })
     }
 
-    redirect(path) {
-        if (this.isActiveDirectory(path))
-            return;
-        this.setState({
-            open: false,
-            shouldRedirect: true,
-            redirectTo: path
-        });
+    redirectToPath(path) {
+        // TODO use react-router-dom
+        window.location.pathname = path;
     }
 
 }

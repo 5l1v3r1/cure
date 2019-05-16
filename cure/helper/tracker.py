@@ -73,7 +73,8 @@ def get_tracker_member(tracker_id, user_id):
     if database_member is None:
         return None
 
-   return TrackerMember.from_dict(database_member)
+    return TrackerMember.from_dict(database_member)
+
 
 def add_user_to_tracker(tracker_id, user_id):
     """

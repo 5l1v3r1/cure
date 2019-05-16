@@ -4,6 +4,7 @@ class ApiUtility {
         this.endpoints =  {
             AUTH_LOGIN: "/auth/login",
             AUTH_LOGOUT: "/auth/logout",
+            AUTH_REGISTER: "/auth/register",
             AUTH_TOKEN_GET: "/auth/token",
             AUTH_TOKEN_GET_SESSION: "/auth/token/generate-session",
             AUTH_TOKEN_LOGOUT: "/auth/token/refresh",
