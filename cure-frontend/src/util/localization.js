@@ -23,7 +23,8 @@ class LocalizationUtility {
                 REGISTER_LEGAL_MUMBO_JUMBO_HEADER: "Legal Mumbo Jumbo",
                 // TODO allow legal documentation
                 REGISTER_LEGAL_MUMBO_JUMBO_DESCRIPTION: "By registering, you agree to follow the terms and conditions set by {boardName}. Please see legal documents on the main website for {boardName} before you agree.",
-                REGISTER_FAILED: "An error occurred while registering: {error}"
+                REGISTER_FAILED: "An error occurred while registering: {error}",
+                NAVBAR_TRACKERS: "Trackers"
             },
             "en-US": { /* don't override anything here. */ },
             "es-ES": {

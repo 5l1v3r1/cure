@@ -4,7 +4,7 @@ API_PREFIX = "/api"
 class Routes:
 
     ROUTE_GET_TRACKERS = "/trackers"
-    ROUTE_ADD_TRACKER = "/trackers/add"
+    ROUTE_ADD_TRACKER = "/tracker"
     ROUTE_JOIN_TRACKER = "/trackers/<tracker_id>/join"
     ROUTE_GET_TRACKER = "/trackers/<tracker_id>"
     ROUTE_DELETE_TRACKER = "/trackers/<tracker_id>/delete"
@@ -18,7 +18,8 @@ class Routes:
     ROUTE_AUTH_LOGOUT = "/auth/logout"
     ROUTE_AUTH_MFA = "/auth/mfa"
     ROUTE_AUTH_GET_SESSION_INFO = "/auth/session"
-    ROUTE_GET_USER_SELF = "/users/me"
+    ROUTE_GET_USER_SELF = "/user"
+    ROUTE_GET_USER = "/users/<user_id>"
     ROUTE_GET_BOARD = "/board"
     ROUTE_GET_GLOBAL_ROLES = "/global-roles"
     ROUTE_GET_GLOBAL_ROLE = "/global-roles/<role_id>"

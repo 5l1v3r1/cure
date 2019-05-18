@@ -84,3 +84,15 @@ def add_user_to_tracker(tracker_id, user_id):
     member.user_id = str(user_id)
     database.insert_one(const.DATABASE_TRACKER_MEMBER_NAME, member.as_database_object())
     return member
+
+
+def get_all_public_trackers():
+
+    trackers = []
+    trackers_from_database = database.find(const.DATABASE_TRACKER_NAME, {
+        "public": True
+    })
+    # convert from iteration into an array
+    for tracker in trackers_from_database:
+        trackers.append(tracker)
+    return trackers

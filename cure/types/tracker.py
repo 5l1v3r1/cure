@@ -49,8 +49,6 @@ class Tracker(DatabaseObject):
     name = "unnamed tracker"
     # If set to true, no one can join unless they have permission.
     invite_only = False
-    # Members in the server. Not returned in as_dict.
-    members = []
     roles = []
     integrations = []
     allow_custom_format = True
@@ -61,6 +59,7 @@ class Tracker(DatabaseObject):
         "Operating system": "string",
         "Extra information": "optional string"
     }
+    public = True
 
     mongodb_id = None
     

@@ -10,8 +10,10 @@ import cure.auth.authentication as auth
 import cure.types.exception as errors
 import flask
 
+
 def get_route(route):
     return constants.ROUTES.get_route(route)
+
 
 @app.route(get_route(constants.ROUTES.ROUTE_GET_USER_SELF), methods=["GET"])
 @require_authentication
@@ -28,6 +30,7 @@ def get_users_me(user):
 
     return jsonify(user.as_public_dict())
 
+
 @app.route(get_route(constants.ROUTES.ROUTE_GET_GLOBAL_ROLES), methods=["GET"])
 @require_authentication
 def get_roles_global(user):
@@ -37,6 +40,7 @@ def get_roles_global(user):
     for role_object in roles:
         response.append(UserRole().from_dict(role_object).as_dict())
     return jsonify(response)
+
 
 @app.route(get_route(constants.ROUTES.ROUTE_ADD_GLOBAL_ROLE), methods=["POST"])
 @require_authentication
@@ -54,7 +58,7 @@ def add_global_role(data, user):
 
     name = data.get("name", "unnamed role")
     permissions = data.get("permissions", 0x00000000)
-    position = date.get("position", 0)
+    position = data.get("position", 0)
 
     database.insert_one(constants.DATABASE_ROLES_NAME, {
         "role_name": name,
@@ -62,4 +66,4 @@ def add_global_role(data, user):
         "role_position": position
     })
 
-    return jsonify({})
+    return jsonify({"updated_user": user.as_public_dict()})

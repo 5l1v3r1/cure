@@ -78,6 +78,7 @@ class RegisterComponent extends Component {
                 </div>
             )
         }
+        // TODO make enter submit form
         return (
             <div style={{margin: "20px"}}>
                 <h1>{this.state.boardName}</h1>

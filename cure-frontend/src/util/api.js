@@ -9,8 +9,26 @@ class ApiUtility {
             AUTH_TOKEN_GET_SESSION: "/auth/token/generate-session",
             AUTH_TOKEN_LOGOUT: "/auth/token/refresh",
             BOARD_GET: "/board",
-            USERS_ME: "/users/me"
+            USERS_ME: "/user",
+            USERS_GET: function (data) {
+                return `/users/${data.userId}`
+            },
+            TRACKERS_GET_ALL: "/trackers"
         };
+        // Anti-directory traversal on endpoints
+        // ---- CONTACT ME BEFORE YOU CHANGE THIS ----
+        for (var endpoint in this.endpoints) {
+            if (typeof this.endpoints[endpoint] === "function") {
+                var originalFunction = this.endpoints[endpoint]
+                this.endpoints[endpoint] = function (data) {
+                    for (var key in data) {
+                        data[key] = encodeURIComponent(data[key])
+                    }
+                    originalFunction(data);
+                }
+            }
+        }
+        // ---- CONTACT ME BEFORE YOU CHANGE THIS ----
         this.apiLocation = window.location.origin + "/api";
     }
 
@@ -97,6 +115,7 @@ class ApiUtility {
                 })
             });
     }
+
 }
 
 

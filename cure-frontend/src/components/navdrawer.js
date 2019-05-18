@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LogoutIcon from '@material-ui/icons/Lock'
-import { Redirect } from 'react-router-dom';
+import TrackerIcon from '@material-ui/icons/List';
+import { Link, withRouter } from 'react-router-dom';
 import localization from '../util/localization';
-import { withRouter } from 'react-router-dom';
 
 
 class NavdrawerComponent extends Component {
@@ -18,7 +18,7 @@ class NavdrawerComponent extends Component {
         this.isActiveDirectory = this.isActiveDirectory.bind(this);
         this.closeDrawer = this.closeDrawer.bind(this);
         this.open = this.open.bind(this);
-        this.redirect = this.redirectToPath.bind(this);
+        this.redirectToPath = this.redirectToPath.bind(this);
         
     }
 
@@ -28,7 +28,7 @@ class NavdrawerComponent extends Component {
             <div>
                 <Drawer open={this.state.open} onClose={this.closeDrawer}>
                     <List>
-                        <ListItem button onClick={() => this.redirectToPath("/dashboard")}>
+                        <ListItem button component={Link} to="/dashboard" onClick={this.closeDrawer}>
                             <ListItemIcon>
                                 <DashboardIcon />
                             </ListItemIcon>
@@ -36,7 +36,15 @@ class NavdrawerComponent extends Component {
                                 {localization.getLocaleString("NAVBAR_DASHBOARD")}
                             </ListItemText>
                         </ListItem>
-                        <ListItem button onClick={() => this.redirectToPath("/logout")}>
+                        <ListItem button component={Link} to="/trackers" onClick={this.closeDrawer}>
+                            <ListItemIcon>
+                                <TrackerIcon />
+                            </ListItemIcon>
+                            <ListItemText>
+                                {localization.getLocaleString("NAVBAR_TRACKERS")}
+                            </ListItemText>
+                        </ListItem>
+                        <ListItem button component={Link} to="/logout" onClick={this.closeDrawer}>
                             <ListItemIcon>
                                 <LogoutIcon />
                             </ListItemIcon>

@@ -9,6 +9,7 @@ import LoginComponent from './components/auth/login';
 import DashboardComponent from './components/dashboard/dashboard';
 import LogoutComponent from './components/auth/logout';
 import RegisterComponent from './components/auth/register';
+import TrackerDiscoveryComponent from './components/tracker/tracker-discovery';
 
 const theme = createMuiTheme({
   palette: {
@@ -35,6 +36,7 @@ class App extends Component {
                 <Route path="/dashboard" exact component={DashboardComponent} />
                 <Route path="/logout" component={LogoutComponent} />
                 <Route path="/register" component={RegisterComponent} />
+                <Route path="/trackers" component={TrackerDiscoveryComponent} />
               </Switch>
             </div>
           </BrowserRouter>
