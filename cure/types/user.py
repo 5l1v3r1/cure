@@ -1,5 +1,6 @@
 import time
 from cure.types.base import DatabaseObject
+from cure.types.permissions import GlobalPermissions
 
 
 class User(DatabaseObject):
@@ -35,6 +36,12 @@ class User(DatabaseObject):
         public_dict.pop("mfa_key")
 
         return public_dict
+    
+    def get_permissions(self):
+        role_permissions = 0x00000000
+        for role in self.global_roles:
+            role_permissions += role.role_permissions
+        return role_permissions
 
 
 class UserRole(DatabaseObject):

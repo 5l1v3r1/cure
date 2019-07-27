@@ -48,49 +48,51 @@ class Tracker {
     }
 }
 
+// I'm just going to use the TrackerManager as cache.
+// /**
+//  * Caches trackers for the tracker helper.
+//  * 
+//  * Without this, many more calls would be made to the API to get trackers and it would
+//  * be less efficient.
+//  */
+// class TrackerCache {
 
-/**
- * Caches trackers for the tracker helper.
- * 
- * Without this, many more calls would be made to the API to get trackers and it would
- * be less efficient.
- */
-class TrackerCache {
+//     /**
+//      * Creates a tracker cache.
+//      */
+//     constructor() {
+//         this.cachedTrackers = {}
+//     }
 
-    /**
-     * Creates a tracker cache.
-     */
-    constructor() {
-        this.cachedTrackers = {}
-    }
+//     /**
+//      * Stores a tracker into the cached tracker database
+//      * @param {Tracker} trackerObject the object to store in the database
+//      * @returns {Boolean} true on success, false on failure
+//      */
+//     storeTracker(trackerObject) {
+//         if (this.cachedTrackers[trackerObject.getTrackerId()]) {
+//             return false;
+//         }
+//         this.cachedTrackers[trackerObject.getTrackerId()] = trackerObject;
+//         return true;
+//     }
 
-    /**
-     * Stores a tracker into the cached tracker database
-     * @param {Tracker} trackerObject the object to store in the database
-     * @returns {Boolean} true on success, false on failure
-     */
-    storeTracker(trackerObject) {
-        if (this.cachedTrackers[trackerObject.getTrackerId()]) {
-            return false;
-        }
-        this.cachedTrackers[trackerObject.getTrackerId()] = trackerObject;
-        return true;
-    }
+//     /**
+//      * Retrieves a tracker from the cache by its ID
+//      * @param {String} trackerId mongoDB ID of the tracker
+//      * @returns {Tracker} the Tracker object if it exists. otherwise, undefined is returned.
+//      */
+//     getTracker(trackerId) {
+//         return this.cachedTrackers[trackerId]
+//     }
 
-    /**
-     * Retrieves a tracker from the cache by its ID
-     * @param {String} trackerId mongoDB ID of the tracker
-     * @returns {Tracker} the Tracker object if it exists. otherwise, undefined is returned.
-     */
-    getTracker(trackerId) {
-        return this.cachedTrackers[trackerId]
-    }
+//     /**
+//      * Updates a tracker based on its tracker ID
+//      * @param {Tracker} trackerObject the object to store in the database
+//      */
+//     updateTracker(trackerObject) {
+//         this.cachedTrackers[trackerObject.getTrackerId()] = trackerObject;
+//     }
+// }
 
-    /**
-     * Updates a tracker based on its tracker ID
-     * @param {Tracker} trackerObject the object to store in the database
-     */
-    updateTracker(trackerObject) {
-        this.cachedTrackers[trackerObject.getTrackerId()] = trackerObject;
-    }
-}
+export default Tracker;

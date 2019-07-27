@@ -74,6 +74,7 @@ class Tracker(DatabaseObject):
             "roles": self.roles,
             "allow_custom_format": self.allow_custom_format,
             "default_format": self.default_format,
+            "public": self.public,
             "id": str(self.mongodb_id)
         }
 

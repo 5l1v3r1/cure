@@ -2,7 +2,7 @@ from cure.api.base import get_route, require_authentication, require_global_perm
 from cure.server import app
 from cure.util.config import config
 from cure.types.tracker import TrackerCache
-from flask import jsonify
+from flask import jsonify, g
 
 import cure.constants as constants
 import cure.helper.tracker as tracker_helper
@@ -36,6 +36,10 @@ def create_tracker(data, user):
 def get_tracker(tracker_id):
 
     tracker = tracker_helper.get_tracker(tracker_id)
+
+    if not tracker.public:
+        if g.user is None or tracker_helper.get_tracker_member(tracker.mongodb_id, g.user.mongodb_id) is None:
+            raise errors.NotFoundError
 
     if tracker is None:
         raise errors.NotFoundError

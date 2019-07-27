@@ -146,3 +146,4 @@ class NotFoundError(UserError):
     friendly_name = "We couldn't find that."
     identifier = "not_found_error"
     code = 13
+

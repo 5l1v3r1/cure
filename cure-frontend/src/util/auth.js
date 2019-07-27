@@ -3,10 +3,23 @@ import api from './api.js';
 class AuthenticationUtility {
 
     constructor() {
+        console.log("yeet");
         this.currentSession = null;
         this.currentSessionType = null;
         this.authenticated = false;
+        this.eventStorage = {
+            login: [],
+            logout: []
+        };
         this.restore();
+    }
+
+    listenForLogin(callback) {
+        this.eventStorage.login.push(callback);
+    }
+
+    listenForLogout(callback) {
+        this.eventStorage.logout.push(callback);
     }
 
     restore() {
@@ -83,6 +96,10 @@ class AuthenticationUtility {
         }, {}, (data) => {
             if (!data.error) {
                 this.restoreWithSession(data.session["session_id"]);
+                this.authenticated = true;
+                for (var eventCallback of this.eventStorage.login) {
+                    eventCallback();
+                }
                 callback({
                     success: true,
                     mfaRequired: !data["mfa_authenticated"]
@@ -103,6 +120,9 @@ class AuthenticationUtility {
         this.authenticated = false;
         window.localStorage.removeItem("token");
         window.localStorage.removeItem("session");
+        for (var eventCallback of this.eventStorage.logout) {
+            eventCallback();
+        }
     }
 
 }

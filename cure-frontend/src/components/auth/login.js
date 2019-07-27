@@ -70,42 +70,42 @@ class LoginComponent extends Component {
         // TODO make enter submit form
         return (
             <div style={{margin: "20px"}}>
-                <center>
-                    <form>
-                        <h1>{this.state.boardName}</h1>
-                        <p>{localization.getLocaleString(
-                            this.state.private ? "BOARD_WELCOME_SIGN_IN" : "BOARD_WELCOME_SIGN_IN_OR_REGISTER", {
-                                boardName: this.state.boardName
-                            })}</p>
-                        <TextField 
-                            id="login-field-username"
-                            label={localization.getLocaleString("COMMON_USERNAME")}
-                            margin="normal"
-                        />
-                        <br />
-                        <TextField 
-                            id="login-field-password"
-                            label={localization.getLocaleString("COMMON_PASSWORD")}
-                            margin="normal"
-                            type="password"
-                            autoComplete="cure-password"
-                        />
-                        <br />
-                        <FormControlLabel
-                            control={<Checkbox
-                                id="login-field-remember-me"
-                                margin="normal" />}
-                            label={localization.getLocaleString("REMEMBER_ME")} />
-                        <br />
-                        <Button variant="contained" onClick={this.login} color="primary">
-                            {localization.getLocaleString("LOGIN_BUTTON")}
-                        </Button>
-                        <span>&nbsp;</span>
-                        <Button variant="contained" onClick={this.register} color="secondary">
-                            {localization.getLocaleString("REGISTER_BUTTON")}
-                        </Button>
-                    </form>
-                </center>
+                <form>
+                    <h1>{this.state.boardName}</h1>
+                    <p>{localization.getLocaleString(
+                        this.state.private ? "BOARD_WELCOME_SIGN_IN" : "BOARD_WELCOME_SIGN_IN_OR_REGISTER", {
+                            boardName: this.state.boardName
+                        })}</p>
+                    <TextField 
+                        id="login-field-username"
+                        label={localization.getLocaleString("COMMON_USERNAME")}
+                        style={{width: "400px"}}
+                        margin="normal"
+                    />
+                    <br />
+                    <TextField 
+                        id="login-field-password"
+                        label={localization.getLocaleString("COMMON_PASSWORD")}
+                        style={{width: "400px"}}
+                        margin="normal"
+                        type="password"
+                        autoComplete="cure-password"
+                    />
+                    <br />
+                    <FormControlLabel
+                        control={<Checkbox
+                            id="login-field-remember-me"
+                            margin="normal" />}
+                        label={localization.getLocaleString("REMEMBER_ME")} />
+                    <br />
+                    <Button variant="contained" onClick={this.login} color="primary">
+                        {localization.getLocaleString("LOGIN_BUTTON")}
+                    </Button>
+                    <span>&nbsp;</span>
+                    <Button variant="contained" onClick={this.register} color="secondary">
+                        {localization.getLocaleString("REGISTER_BUTTON")}
+                    </Button>
+                </form>
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
