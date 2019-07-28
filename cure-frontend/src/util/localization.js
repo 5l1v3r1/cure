@@ -7,6 +7,7 @@ class LocalizationUtility {
                 BOARD_WELCOME_SIGN_IN: "Welcome to {boardName}! Sign in below.",
                 COMMON_USERNAME: "Username",
                 COMMON_PASSWORD: "Password",
+                COMMON_CANCEL: "Cancel",
                 LOGIN_BUTTON: "Login",
                 REGISTER_BUTTON: "Register",
                 LOGIN_FAIL_INVALID_PASSWORD: "Login failed: invalid password",
@@ -24,7 +25,14 @@ class LocalizationUtility {
                 // TODO allow legal documentation
                 REGISTER_LEGAL_MUMBO_JUMBO_DESCRIPTION: "By registering, you agree to follow the terms and conditions set by {boardName}. Please see legal documents on the main website for {boardName} before you agree.",
                 REGISTER_FAILED: "An error occurred while registering: {error}",
-                NAVBAR_TRACKERS: "Trackers"
+                NAVBAR_TRACKERS: "Trackers",
+                TRACKERS_CREATE_TRACKER: "Create tracker",
+                TRACKERS_CREATE_TRACKER_HELP_TEXT: "You can create a tracker for your board. Once the tracker is created, you will be able to modify more settings.",
+                TRACKERS_TRACKER_NAME: "Tracker name",
+                TRACKERS_INVITE_ONLY: "Invite only",
+                TRACKERS_PUBLIC: "Publicly visible to everyone",
+                TRACKERS_HEADER: "Trackers",
+                TRACKERS_HELP_TEXT: "All trackers you have access to are listed below."
             },
             "en-US": { /* don't override anything here. */ },
             "es-ES": {

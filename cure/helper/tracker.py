@@ -9,12 +9,13 @@ tracker_cache = TrackerCache()
 
 # TODO add ability to delete trackers, remove members, etc.
 
-def create_tracker(name, invite_only, owner=User()):
+def create_tracker(name, invite_only, public, owner=User()):
     """
     Creates a tracker
     ---
     name - the name to use for the tracker
     invite_only - bool to determine board privacy
+    public - is the board public?
     owner - a User of the person creating it.
 
     returns a tracker id
@@ -22,14 +23,17 @@ def create_tracker(name, invite_only, owner=User()):
 
     (acknowledged, tracker_id) = database.insert_one(const.DATABASE_TRACKER_NAME, {
         "name": name,
-        "invite_only": invite_only
+        "invite_only": invite_only,
+        "public": public
     })
+    
+    if not acknowledged:
+        return None
 
-    member = TrackerMember()
-    member.user_id = str(owner.mongodb_id)
+    member = TrackerMember(str(owner.mongodb_id), str(tracker_id))
     member.is_owner = True
     member.permissions = 0x88888888
-    database.insert_one(const.DATABASE_TRACKER_MEMBER_NAME, member.as_database_object())
+    database.insert_one(const.DATABASE_TRACKER_MEMBER_NAME, TrackerMember.as_database_object(member))
 
     tracker = Tracker.from_dict(database.find_one(const.DATABASE_TRACKER_NAME, {"_id": tracker_id}))
 
@@ -80,9 +84,8 @@ def add_user_to_tracker(tracker_id, user_id):
     """
     Adds a user to a tracker if they aren't already in the tracker.
     """
-    member = TrackerMember()
-    member.user_id = str(user_id)
-    database.insert_one(const.DATABASE_TRACKER_MEMBER_NAME, member.as_database_object())
+    member = TrackerMember(str(user_id), str(tracker_id))
+    database.insert_one(const.DATABASE_TRACKER_MEMBER_NAME, TrackerMember.as_database_object(member))
     return member
 
 
@@ -94,5 +97,15 @@ def get_all_public_trackers():
     })
     # convert from iteration into an array
     for tracker in trackers_from_database:
-        trackers.append(tracker)
+        trackers.append(Tracker.from_dict(tracker))
     return trackers
+
+def get_tracker_ids_for_user(user):
+    """
+    Returns the IDs (as strings) of the trackers that a user is a member of.
+    """
+    user_id = str(user.mongodb_id)
+    tracker_ids = []
+    for tracker in database.find(const.DATABASE_TRACKER_MEMBER_NAME, {"user_id": user_id}):
+        tracker_ids.append(str(tracker["tracker_id"]))
+    return tracker_ids

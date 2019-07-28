@@ -30,28 +30,45 @@ class TrackerUtil {
     }
 
     fetchTrackers(callback) {
+        // TODO if we add guest mode, allow unauthenticated.
         if (auth.authenticated) {
             auth.getWithAuthentication(api.endpoints.TRACKERS_GET_ALL, {}, (trackers) => {
                 this.trackers = {};
-                for (var trackerObject in trackers["trackers"]) {
+                for (var trackerObject of trackers["trackers"]) {
                     var tracker = this.parseTracker(trackerObject);
-                    this.trackers[tracker.getTrackerId()] = tracker;
+                    this.trackers[tracker.trackerId] = tracker;
+                    //console.log(tracker);
                 }
-                callback();
+                auth.getWithAuthentication(api.endpoints.TRACKERS_MINE, {}, (t) => {
+                    for (var trackerId of t["trackers"]) {
+                        if (this.trackers[trackerId]) {
+                            this.trackers[trackerId].joined = true;
+                        }
+                    }
+                    callback();
+                });
             });
         }
     }
 
+    getAllTrackers() {
+        var trackerList = []
+        for (var trackerId in this.trackers) {
+            trackerList.push(this.trackers[trackerId])
+        }
+        return trackerList
+    }
+
     parseTracker(tracker) {
-        const requiredAttributes = ["id", "name", "invite_only", "public"]
-        for (var reqAttr of requiredAttributes) {
-            if (tracker[reqAttr] == null) {
+        const requiredAttributes = ["id", "name", "invite_only", "public"];
+        for (var reqAttr in requiredAttributes) {
+            if (tracker[reqAttr] === null) {
                 return null;
             }
         }
-        var tracker = new Tracker(tracker["id"], tracker["name"], tracker["invite_only"], tracker["public"])
-        tracker.setTrackerData(tracker);
-        return tracker;
+        var trackerObject = new Tracker(tracker["id"], tracker["name"], tracker["invite_only"], tracker["public"]);
+        trackerObject.setTrackerData(tracker);
+        return trackerObject;
     }
 }
 

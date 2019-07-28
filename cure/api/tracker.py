@@ -14,7 +14,7 @@ import bson
 @app.route(get_route(constants.ROUTES.ROUTE_ADD_TRACKER), methods=["POST"])
 @require_global_permissions(permission=0x00000002)
 @require_json
-def create_tracker(data, user):
+def create_tracker(data):
 
     name = data.get("name", "unnamed tracker")
     invite_only = data.get("invite_only", False)
@@ -24,9 +24,9 @@ def create_tracker(data, user):
         raise errors.InvalidJsonError
     if type(data.get("public", False)) != bool:
         raise errors.InvalidJsonError
-    owner = user_helper.get_user_by_id(bson.ObjectId(user))
-    tracker = tracker_helper.create_tracker(name, invite_only, owner)
-    tracker.public = data.get("public", True)
+    owner = g.user
+    public = data.get("public", True)
+    tracker = tracker_helper.create_tracker(name, invite_only, public, owner)
     tracker_helper.tracker_cache.add_tracker(tracker)
     
     return jsonify(tracker.as_dict())
@@ -53,11 +53,14 @@ def join_tracker(user, tracker_id):
 
     tracker = tracker_helper.get_tracker(tracker_id)
 
-    if tracker is None:
+    if tracker is None or not tracker.public:
         raise errors.NotFoundError
 
-    if tracker.invite_only or not tracker.public:
+    if tracker.invite_only:
         raise errors.InvalidPermissionError
+
+    if tracker_helper.get_tracker_member(tracker.mongodb_id, g.user.mongodb_id) is not None:
+        raise errors.NotFoundError
     
     # TODO when we implement bans, prevent users from joining.
     
@@ -73,4 +76,12 @@ def get_public_trackers():
         output.append(tracker.as_dict())
     return jsonify({
         "trackers": output
+    }), "200"
+
+@app.route(get_route(constants.ROUTES.ROUTE_USER_TRACKERS), methods=["GET"])
+@require_authentication
+def get_user_trackers(user):
+    trackers = tracker_helper.get_tracker_ids_for_user(g.user)
+    return jsonify({
+        "trackers": trackers
     }), "200"

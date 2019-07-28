@@ -1,4 +1,5 @@
 import api from './api.js';
+import User from './../type/user'
 
 class AuthenticationUtility {
 
@@ -12,6 +13,7 @@ class AuthenticationUtility {
             logout: []
         };
         this.restore();
+        this.currentUser = null;
     }
 
     listenForLogin(callback) {
@@ -88,6 +90,26 @@ class AuthenticationUtility {
         headers["Authorization"] = this.getAuthorizationHeaderString()
         api.delete(endpoint, data, headers, callback);
     }
+
+    getCurrentUser(callback, forceRefresh=false) {
+        if (!this.authenticated) {
+            callback(null);
+            return;
+        }
+        if (this.currentUser != null && !forceRefresh) {
+            callback(this.currentUser);
+            return;
+        }
+        this.getWithAuthentication(api.endpoints.USERS_ME, {}, (data) => {
+            if (!data["error"]) {
+                this.currentUser = new User(data["id"], data["username"]);
+                this.currentUser.loadFromData(data);
+                callback(this.currentUser);
+                return;
+            }
+            callback(null);
+        })
+    }
     
     login(username, password, rememberMe, callback) {
         api.post(api.endpoints.AUTH_LOGIN, {
@@ -97,6 +119,12 @@ class AuthenticationUtility {
             if (!data.error) {
                 this.restoreWithSession(data.session["session_id"]);
                 this.authenticated = true;
+                this.getWithAuthentication(api.endpoints.USERS_ME, {}, (data) => {
+                    if (!data["error"]) {
+                        this.currentUser = new User(data["id"], data["username"]);
+                        this.currentUser.loadFromData(data);
+                    }
+                })
                 for (var eventCallback of this.eventStorage.login) {
                     eventCallback();
                 }
@@ -118,6 +146,7 @@ class AuthenticationUtility {
         this.currentSession = "";
         this.currentSessionType = "";
         this.authenticated = false;
+        this.currentUser = null;
         window.localStorage.removeItem("token");
         window.localStorage.removeItem("session");
         for (var eventCallback of this.eventStorage.logout) {

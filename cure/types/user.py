@@ -34,6 +34,7 @@ class User(DatabaseObject):
 
         public_dict.pop("password_hash")
         public_dict.pop("mfa_key")
+        public_dict["id"] = str(self.mongodb_id)
 
         return public_dict
     

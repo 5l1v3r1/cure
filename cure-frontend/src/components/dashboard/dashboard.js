@@ -33,9 +33,9 @@ class DashboardComponent extends Component {
                 })
                 return;
             }
-            auth.getWithAuthentication(api.endpoints.USERS_ME, {}, (data) => {
+            auth.getCurrentUser((user) => {
                 this.setState({
-                    username: data.username
+                    username: user.username
                 })
             })
         })

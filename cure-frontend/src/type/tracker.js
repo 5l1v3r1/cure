@@ -9,13 +9,19 @@ class Tracker {
      * @param {String} trackerId the tracker's ID
      * @param {String} name the name of the tracker
      * @param {String} inviteOnly whether or not the tracker is invite-only
-     * @param {String} public whether or not the tracker is public
+     * @param {String} isPublic whether or not the tracker is public
      */
-    constructor(trackerId, name, inviteOnly, public) {
+    constructor(trackerId, name, inviteOnly, isPublic) {
         this.trackerId = trackerId;
         this.name = name;
         this.inviteOnly = inviteOnly;
-        this.public = public;
+        this.isPublic = isPublic;
+        this.joined = false;
+        this.description = null;
+    }
+
+    hasJoined() {
+        return this.joined;
     }
 
     /**
@@ -24,7 +30,12 @@ class Tracker {
      */
     setTrackerData(trackerData) {
         for (var key in trackerData) {
+            //console.log(`${key}: ${trackerData[key]}`)
             if (key === "id" || key.startsWith("_")) {
+                continue;
+            }
+            if (key === "public") {
+                this["isPublic"] = trackerData[key];
                 continue;
             }
             this[key] = trackerData[key];
@@ -45,6 +56,14 @@ class Tracker {
      */
     getTrackerId() {
         return this.trackerId;
+    }
+
+    /**
+     * Returns a description of the tracker
+     * @returns {String} description
+     */
+    getDescription() {
+        return this.description || "No description.";
     }
 }
 

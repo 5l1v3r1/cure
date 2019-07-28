@@ -36,7 +36,7 @@ class NavdrawerComponent extends Component {
                                 {localization.getLocaleString("NAVBAR_DASHBOARD")}
                             </ListItemText>
                         </ListItem>
-                        <ListItem button component={Link} to="/trackers" onClick={this.closeDrawer}>
+                        <ListItem button component={Link} to="/tracker-discovery" onClick={this.closeDrawer}>
                             <ListItemIcon>
                                 <TrackerIcon />
                             </ListItemIcon>

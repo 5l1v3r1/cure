@@ -24,6 +24,7 @@ class Routes:
     ROUTE_GET_GLOBAL_ROLES = "/global-roles"
     ROUTE_GET_GLOBAL_ROLE = "/global-roles/<role_id>"
     ROUTE_ADD_GLOBAL_ROLE = "/global-roles/"
+    ROUTE_USER_TRACKERS = "/user/trackers"
 
     def get_route(self, route):
         return API_PREFIX + route
@@ -35,7 +36,7 @@ AUTH_SESSION_EXPIRE_TIME = float(86400)
 AUTH_UNUSED_SESSION_REMOVAL_TIME = float(3600)
 
 DATABASE_USERS_NAME = "user"
-USERNAME_REGEX = r"^([a-zA-Z\-\_\.]{2,32})$"
+USERNAME_REGEX = r"^([a-zA-Z\-\_\.1-9]{2,32})$"
 
 DATABASE_ROLES_NAME = "role"
 DATABASE_TRACKER_NAME = "tracker"

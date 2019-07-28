@@ -9,6 +9,7 @@ from cure.util.database import database
 from cure.auth.session import session_manager
 import cure.constants as constants
 import cure.auth.token as auth_token
+import cure.helper.user as user_helper
 
 import flask
 import json
@@ -61,11 +62,12 @@ def before_request():
             not user.mfa_authenticated or \
             not user.logged_in:
             raise InvalidAuthError
-        user = user.user_id
+        user = user_helper.get_user_by_id(user.user_id)
     elif auth_split[0] == 'token':
         user = auth_token.token_manager.get_user_for_token(auth_split[1])
         if user is None:
             raise InvalidAuthError
+        user = user_helper.get_user_by_id(user)
     else:
         raise InvalidAuthError
     g.user = user
@@ -79,7 +81,7 @@ def require_authentication(f):
         # Ensure they had an authorization token.
         if g.user is None:
             raise InvalidAuthError
-        return f(g.user, *args, **kwargs)
+        return f(g.user.mongodb_id, *args, **kwargs)
         
     return decorator
 

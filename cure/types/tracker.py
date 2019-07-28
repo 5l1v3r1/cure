@@ -29,15 +29,18 @@ class TrackerMember(DatabaseObject):
     permissions = 0x0
     user_id = None
     is_owner = False
+    tracker_id = ""
 
-    def __init__(self, user_id, permissions=0x0, is_owner=False):
+    def __init__(self, user_id, tracker_id, permissions=0x0, is_owner=False):
         self.user_id = user_id
+        self.tracker_id = str(tracker_id)
         self.permissions = permissions
         self.is_owner = is_owner
     
     def as_dict(self):
         return {
             "user_id": self.user_id,
+            "tracker_id": self.tracker_id,
             "permissions": self.permissions,
             "is_owner": self.is_owner
         }
@@ -52,12 +55,13 @@ class Tracker(DatabaseObject):
     roles = []
     integrations = []
     allow_custom_format = True
+    description = "No description provided."
     default_format = {
-        "Description": "string",
-        "Steps to reproduce": "list string",
-        "Version": "string",
-        "Operating system": "string",
-        "Extra information": "optional string"
+        "description": "string",
+        "stepsToReproduce": "list string",
+        "version": "string",
+        "operatingSystem": "string",
+        "extraInformation": "optional string"
     }
     public = True
 
@@ -75,7 +79,8 @@ class Tracker(DatabaseObject):
             "allow_custom_format": self.allow_custom_format,
             "default_format": self.default_format,
             "public": self.public,
-            "id": str(self.mongodb_id)
+            "id": str(self.mongodb_id),
+            "description": self.description
         }
 
 class TrackerCache:

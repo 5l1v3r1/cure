@@ -24,7 +24,7 @@ def register(username, password):
     user = User()
 
     if database.find(const.DATABASE_USERS_NAME, {"username": username}).count() != 0 or len(username) <= 1:
-        raise errors.UsernameTakenError()
+        raise errors.UsernameTakenError(username)
     user.username = username
     user.password_hash = sha256_crypt.hash(password)
 

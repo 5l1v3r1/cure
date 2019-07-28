@@ -14,8 +14,13 @@ class ApiUtility {
                 return `/users/${data.userId}`
             },
             TRACKERS_GET_ALL: "/trackers",
-            TRACKERS_GET: function(trackerId) {
-                return `/trackers/${trackerId}`
+            TRACKERS_GET: function(data) {
+                return `/trackers/${data.trackerId}`
+            },
+            TRACKERS_ADD: "/tracker",
+            TRACKERS_MINE: "/user/trackers",
+            TRACKERS_JOIN: function(data) {
+                return `/trackers/${data.trackerId}/join`
             }
         };
         // Anti-directory traversal on endpoints
@@ -23,11 +28,12 @@ class ApiUtility {
         for (var endpoint in this.endpoints) {
             if (typeof this.endpoints[endpoint] === "function") {
                 var originalFunction = this.endpoints[endpoint]
+                // eslint-disable-next-line
                 this.endpoints[endpoint] = function (data) {
                     for (var key in data) {
                         data[key] = encodeURIComponent(data[key])
                     }
-                    originalFunction(data);
+                    return originalFunction(data);
                 }
             }
         }
@@ -42,17 +48,17 @@ class ApiUtility {
             headers: headers
         })
             .then(response => response.json())
-            .then(callback)
             .catch((e)=>{
                 console.error("api error: " + JSON.stringify(e))
                 callback({
                     error: {
                         code: -1,
-                        identifier: "invalid_reponse_error",
+                        identifier: "invalid_response_error",
                         friendly_name: "An invalid JSON response occurred"
                     }
                 })
-            });
+            })
+            .then(callback);
     }
 
     post(endpoint, data, headers, callback) {
